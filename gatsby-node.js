@@ -16,5 +16,40 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
   const { createPage } = boundActionCreators
   return new Promise((resolve, reject) => {
     // This is where we'll do most of our work
+    graphql(
+        `
+            {
+                allContentfulPage(limit: 1000) {
+                    edges {
+                        node {
+                            id
+                            title
+                        }
+                    }
+                }
+            }
+        `
+    )
+    .then(result => {
+        if (result.errors) {
+            reject(result.errors)
+        }
+
+        // We'll do the actual page creation here
+        const pageTemplate = path.resolve(`./src/templates/subpage.js`)
+        _.each(result.data.allContentfulPage.edges, edge => {
+            // Here's the beef, seitan, or whatever rocks your boat:
+            createPage({
+                path: `/pages/${slugify(edge.node.title, slugifyOptions)}/`,
+                component: slash(pageTemplate),
+                context: {
+                    id: edge.node.id
+                },
+            })
+        })
+        
+        resolve() // Resolve the promise
+    })
+})
   })
 }
