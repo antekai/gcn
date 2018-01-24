@@ -1,6 +1,28 @@
 import React from 'react'
 import Link from 'gatsby-link'
 import Gallery from '../templates/gallery'
+import slugify from 'slugify'
+
+const slugifyOptions = {
+  replacement: '-',
+  remove: /[$*_+~.()'"!\-:@]/g,
+  lower: true
+}
+
+const LinkList = (data) => {
+  return (
+    <ul>
+      {data.items.map((item, i) => (
+        <li key={i}>
+          <Link key={i} to={`/${data.basepath}/${slugify(item.node.title, slugifyOptions)}`}>
+            {item.node.title}
+          </Link>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 
 class IndexPage extends React.Component {
   render () {
@@ -12,14 +34,10 @@ class IndexPage extends React.Component {
         <Gallery />
         
         <h2>Here are my subpages:</h2>
-        <ul>
-          <li><Link to="/subpage/">A subpage</Link></li>
-        </ul>
+        <LinkList basepath="pages" items={this.props.data.pages.edges} />
         
         <h2>Here are my posts:</h2>
-        <ul>
-          <li><Link to="/blogpost/">A post</Link></li>
-        </ul>
+        <LinkList basepath="posts" items={this.props.data.posts.edges} />
       </div>
     )    
   }
