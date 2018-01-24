@@ -26,3 +26,24 @@ class IndexPage extends React.Component {
 }
 
 export default IndexPage
+
+export const indexQuery = graphql`
+query indexQuery {
+  pages: allContentfulPage {
+    edges {
+      node {
+        id
+        title
+      }
+    }
+  }
+  posts: allContentfulBlogPost {
+    edges {
+      node {
+        id
+        title
+      }
+    }
+  }
+}
+`
