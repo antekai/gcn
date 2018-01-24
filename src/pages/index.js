@@ -23,16 +23,14 @@ const LinkList = (data) => {
   )
 }
 
-
 class IndexPage extends React.Component {
   render () {
     return (
       <div>
         <h1>Hi people</h1>
-    
+
         <h2>Here's my gallery:</h2>
-        <Gallery />
-        
+        <Gallery content={this.props.data.gallery} />
         <h2>Here are my subpages:</h2>
         <LinkList basepath="pages" items={this.props.data.pages.edges} />
         
@@ -42,7 +40,6 @@ class IndexPage extends React.Component {
     )    
   }
 }
-
 export default IndexPage
 
 export const indexQuery = graphql`
@@ -63,5 +60,20 @@ query indexQuery {
       }
     }
   }
+  gallery: contentfulGallery (title: {eq: "My Awesome Gallery"}) {
+    id
+    title
+    images {
+      id
+      title
+      sizes {
+        base64
+        aspectRatio
+        src
+        srcSet
+        sizes
+      }
+    }
+  }  
 }
 `
